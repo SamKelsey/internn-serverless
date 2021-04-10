@@ -1,28 +1,29 @@
 const AWS = require("aws-sdk");
 const SES = new AWS.SES();
+import response from "./services/response";
 
-export const contactMailer = async (event, context, callback) => {
-  const formData = JSON.parse(event.body);
+export const contactMailer = async (event, context) => {
+  const { name, reply_to, message } = JSON.parse(event.body);
+  console.log(JSON.parse(event.body));
+  try {
+    await sendEmail(name, reply_to, message);
 
-  sendEmail(formData, (err, data) => {
-    const response = {
-      statusCode: err ? 500 : 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: err ? err.message : data,
-      }),
-    };
-
-    callback(null, response);
-  });
+    const res = response(200, {
+      name,
+      reply_to,
+      message,
+    });
+    return res;
+  } catch (err) {
+    const res = response(500, { message: err.message });
+    return res;
+  }
 };
 
-const sendEmail = (formData, callback) => {
+const sendEmail = async (name, reply_to, message) => {
   const emailParams = {
     Source: "no-reply@internn.co.uk",
-    ReplyToAddresses: [formData.reply_to],
+    ReplyToAddresses: [reply_to],
     Destination: {
       ToAddresses: ["enquiries@internn.co.uk"],
     },
@@ -30,7 +31,7 @@ const sendEmail = (formData, callback) => {
       Body: {
         Text: {
           Charset: "UTF-8",
-          Data: `${formData.message}\n\nName: ${formData.name}\nEmail: ${formData.reply_to}`,
+          Data: `${message}\n\nName: ${name}\nEmail: ${reply_to}`,
         },
       },
       Subject: {
@@ -40,5 +41,10 @@ const sendEmail = (formData, callback) => {
     },
   };
 
-  SES.sendEmail(emailParams, callback);
+  try {
+    const res = await SES.sendEmail(emailParams).promise();
+    return res;
+  } catch (err) {
+    return err;
+  }
 };
