@@ -9,18 +9,11 @@ plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
-  - serverless-domain-manager
 
 custom:
-  customDomain:
-    domainName: www.internn.co.uk
-    basePath: ""
-    stage: ${self:custom.myStage}
-    enabled: ${self:custom.useDomain.${self:custom.myStage}}
   myStage: ${opt:stage, self:provider.stage}
-  useDomain:
-    dev: false
-    prod: true
+  serverless-offline:
+    port: 8080
 
 provider:
   name: aws
@@ -45,5 +38,5 @@ functions:
     handler: handler.contactMailer
     events:
       - http:
-          path: contact-us
+          path: api/contact-us
           method: post
