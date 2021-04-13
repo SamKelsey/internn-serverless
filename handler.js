@@ -4,6 +4,7 @@ import response from "./services/response";
 
 export const contactMailer = async (event, context) => {
   const { name, reply_to, message } = JSON.parse(event.body);
+
   console.log(JSON.parse(event.body));
   try {
     await sendEmail(name, reply_to, message);

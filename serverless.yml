@@ -40,3 +40,6 @@ functions:
       - http:
           path: api/contact-us
           method: post
+          request:
+            schema:
+              application/json: ${file(schema.json)}

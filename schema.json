@@ -1,0 +1,19 @@
+{
+  "title": "contactMailer",
+  "type": "object",
+  "required": ["name", "reply_to", "message"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "reply_to": {
+      "type": "string",
+      "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 500
+    }
+  }
+}
