@@ -1,6 +1,8 @@
-const AWS = require("aws-sdk");
-const SES = new AWS.SES();
 import response from "./services/response";
+import sendEmail from "./services/sendEmail";
+
+const AWS = require("aws-sdk");
+const S3 = new AWS.S3();
 
 export const contactMailer = async (event, context) => {
   const { name, reply_to, message } = JSON.parse(event.body);
@@ -21,31 +23,20 @@ export const contactMailer = async (event, context) => {
   }
 };
 
-const sendEmail = async (name, reply_to, message) => {
-  const emailParams = {
-    Source: "no-reply@internn.co.uk",
-    ReplyToAddresses: [reply_to],
-    Destination: {
-      ToAddresses: ["enquiries@internn.co.uk"],
-    },
-    Message: {
-      Body: {
-        Text: {
-          Charset: "UTF-8",
-          Data: `${message}\n\nName: ${name}\nEmail: ${reply_to}`,
-        },
-      },
-      Subject: {
-        Charset: "UTF-8",
-        Data: "New Enquiry",
-      },
-    },
-  };
-
+export const getImageData = async (event, context) => {
   try {
-    const res = await SES.sendEmail(emailParams).promise();
-    return res;
+    const data = await S3.getObject({
+      Bucket: "internn-web-info-dev",
+      Key: "image-info.json",
+    }).promise();
+    return {
+      statusCode: 200,
+      body: data.Body.toString("utf-8"),
+    };
   } catch (err) {
-    return err;
+    return response(
+      err.statusCode || 500,
+      err.message || JSON.stringify(err.message)
+    );
   }
 };

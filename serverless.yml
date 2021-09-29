@@ -23,6 +23,10 @@ provider:
       Action:
         - "ses:SendEmail"
       Resource: ["*"]
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+      Resource: "arn:aws:s3:::internn-web-info-dev/*"
   stage: dev
   region: eu-west-1 # Set to Ireland region. Original was us-east-1
   # To load environment variables externally
@@ -43,3 +47,9 @@ functions:
           request:
             schema:
               application/json: ${file(schema.json)}
+  getImageData:
+    handler: handler.getImageData
+    events:
+      - http:
+          path: api/get-image-data
+          method: get
