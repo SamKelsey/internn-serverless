@@ -29,13 +29,13 @@ provider:
       Resource: "arn:aws:s3:::internn-web-info-dev/*"
   stage: dev
   region: eu-west-1 # Set to Ireland region. Original was us-east-1
+  environment:
+    STAGE: ${self:custom.myStage}
   # To load environment variables externally
   # rename env.example to .env and uncomment
   # the following line. Also, make sure to not
   # commit your .env.
   #
-  #environment:
-  #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
 
 functions:
   contactMailer:

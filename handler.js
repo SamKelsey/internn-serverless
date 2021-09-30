@@ -26,7 +26,7 @@ export const contactMailer = async (event, context) => {
 export const getImageData = async (event, context) => {
   try {
     const data = await S3.getObject({
-      Bucket: "internn-web-info-dev",
+      Bucket: `internn-web-info-${process.env.STAGE}`,
       Key: "image-info.json",
     }).promise();
     return {
