@@ -17,6 +17,7 @@ custom:
 
 provider:
   name: aws
+  profile: internn
   runtime: nodejs10.x
   iamRoleStatements:
     - Effect: "Allow"
@@ -35,7 +36,6 @@ provider:
   # rename env.example to .env and uncomment
   # the following line. Also, make sure to not
   # commit your .env.
-  #
 
 functions:
   contactMailer:
@@ -52,4 +52,10 @@ functions:
     events:
       - http:
           path: api/get-image-data
+          method: get
+  getTeamData:
+    handler: handler.getTeamData
+    events:
+      - http:
+          path: api/get-team-data
           method: get

@@ -40,3 +40,21 @@ export const getImageData = async (event, context) => {
     );
   }
 };
+
+export const getTeamData = async (event, context) => {
+  try {
+    const data = await S3.getObject({
+      Bucket: `internn-web-info-${process.env.STAGE}`,
+      Key: "our-team.json",
+    }).promise();
+    return {
+      statusCode: 200,
+      body: data.Body.toString("utf-8"),
+    };
+  } catch (err) {
+    return response(
+      err.statusCode || 500,
+      err.message || JSON.stringify(err.message)
+    );
+  }
+};
